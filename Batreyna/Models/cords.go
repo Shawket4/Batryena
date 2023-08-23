@@ -6,5 +6,5 @@ type LatLng struct {
 	gorm.Model
 	BranchID uint   `json:"branch_id"`
 	Lat      string `json:"lat"`
-	Long     string `json:"long"`
+	Lng      string `json:"lng"`
 }

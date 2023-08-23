@@ -9,7 +9,7 @@ import (
 
 func FetchBranches(c *gin.Context) {
 	var branches []Models.Branch
-	if err := Models.DB.Model(Models.Branch{}).Preload("Inventory").Find(&branches).Error; err != nil {
+	if err := Models.DB.Model(Models.Branch{}).Preload("LatLng").Preload("Inventory").Find(&branches).Error; err != nil {
 		ReturnErr(c, err)
 	}
 	for index := range branches {
