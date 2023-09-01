@@ -4,6 +4,11 @@ import "gorm.io/gorm"
 
 type Transaction struct {
 	gorm.Model
-	Items     []Item  `json:"items" gorm:"many2many:transaction_items;"`
-	TotalCost float64 `json:"total_cost"`
+	BranchID  uint     `json:"branch_id"`
+	Items     []ItemID `json:"items" gorm:"many2many:transaction_items;"`
+	TotalCost float64  `json:"total_cost"`
+}
+
+type ItemID struct {
+	ID uint `json:"id"`
 }

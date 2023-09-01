@@ -9,6 +9,7 @@ import (
 
 func Setup() {
 	app := gin.Default()
+
 	// Public Registeration And Login
 	public := app.Group("/api")
 	public.POST("/login", Controllers.Login)
@@ -18,10 +19,12 @@ func Setup() {
 	authorized.Use(Middleware.JwtAuthMiddleware())
 	authorized.GET("/user", Controllers.CurrentUser)
 	authorized.GET("/FetchBranches", Controllers.FetchBranches)
+	// authorized.GET("/FetchInventories", Controllers.FetchInventories)
 	authorized.POST("/RegisterBranch", Controllers.RegisterBranch)
 	authorized.POST("/UpdateBranch", Controllers.UpdateBranch)
 	authorized.POST("/DeleteBranch", Controllers.DeleteBranch)
 	authorized.GET("/FetchTransactions", Controllers.FetchTransactions)
+	public.GET("/FetchBranchesHeatData", Controllers.FetchBranchesHeatData)
 	authorized.POST("/RegisterTransaction", Controllers.RegisterTransaction)
 	authorized.POST("/UpdateTransaction", Controllers.UpdateTransaction)
 	authorized.POST("/DeleteTransaction", Controllers.DeleteTransaction)
