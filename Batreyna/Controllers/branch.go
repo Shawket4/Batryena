@@ -1,7 +1,9 @@
 package Controllers
 
 import (
-	"Batreyna/Models"
+	"BatrynaBackend/Models"
+	"BatrynaBackend/Token"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -44,11 +46,26 @@ func RegisterBranch(c *gin.Context) {
 	// input.Inventory = Models.Inventory{Items: []Models.Item{}}
 	input.HeatMap = Models.HeatMap{}
 	input.HeatMap.Value = 1
+	var user Models.User
+	user.Permission = 1
+	user.Username = input.Name
+	user.Password = input.Password
+
 	if err := Models.DB.Model(&Models.Branch{}).Create(&input).Error; err != nil {
 		ReturnErr(c, err)
 		return
 	}
-
+	var branch Models.Branch
+	if err := Models.DB.Model(&Models.Branch{}).Where("name = ?", input.Name).Find(&branch).Error; err != nil {
+		ReturnErr(c, err)
+		return
+	}
+	user.BranchID = branch.ID
+	_, err := user.SaveUser()
+	if err != nil {
+		ReturnErr(c, err)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "Branch Registered"})
 }
 
@@ -64,17 +81,37 @@ func UpdateBranch(c *gin.Context) {
 		ReturnErr(c, err)
 	}
 
-	if err := Models.DB.Model(&Models.ParentItem{}).Delete(&branch.ParentItems).Error; err != nil {
-		ReturnErr(c, err)
-	}
-
 	branch.Name = input.Name
 	branch.LatLng.Lat = input.LatLng.Lat
 	branch.LatLng.Lng = input.LatLng.Lng
-	branch.ParentItems = input.ParentItems
 	branch.Address = input.Address
+	var items []Models.Item
+	for _, parentItem := range branch.ParentItems {
+		var ParentItem Models.ParentItem
+		if err := Models.DB.Model(&Models.ParentItem{}).Preload("Items").Where("id = ?", parentItem.ID).Find(&ParentItem).Error; err != nil {
+			ReturnErr(c, err)
+		}
+		for _, item := range ParentItem.Items {
+			items = append(items, item)
+		}
+
+	}
+
+	if err := Models.DB.Model(&Models.ParentItem{}).Delete(&branch.ParentItems).Error; err != nil {
+		return
+	}
+	if err := Models.DB.Model(&Models.Item{}).Delete(&items).Error; err != nil {
+		ReturnErr(c, err)
+	}
+	branch.ParentItems = input.ParentItems
+
+	fmt.Println(branch.ParentItems)
 
 	if err := Models.DB.Save(&branch).Error; err != nil {
+		ReturnErr(c, err)
+	}
+
+	if err := Models.DB.Save(&branch.ParentItems).Error; err != nil {
 		ReturnErr(c, err)
 	}
 
@@ -93,4 +130,44 @@ func DeleteBranch(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Branch Deleted"})
+}
+
+func FetchBranchData(c *gin.Context) {
+	user_id, err := Token.ExtractTokenID(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := Models.GetUserByID(user_id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var branch Models.Branch
+	if err := Models.DB.Model(&Models.Branch{}).Where("id = ?", user.BranchID).Preload("ParentItems").Preload("Transactions").Find(&branch).Error; err != nil {
+		ReturnErr(c, err)
+	}
+	var ParentItems []Models.ParentItem
+	for _, parentItem := range branch.ParentItems {
+		var ParentItem Models.ParentItem
+		if err := Models.DB.Model(&Models.ParentItem{}).Where("id = ?", parentItem.ID).Preload("Items").Find(&ParentItem).Error; err != nil {
+			ReturnErr(c, err)
+		}
+		ParentItems = append(ParentItems, ParentItem)
+	}
+	var Transactions []Models.Transaction
+	for _, transaction := range branch.Transactions {
+		var Transaction Models.Transaction
+		if err := Models.DB.Model(&Models.Transaction{}).Where("id = ?", transaction.ID).Preload("ItemID").Find(&Transaction).Error; err != nil {
+			ReturnErr(c, err)
+		}
+		Transactions = append(Transactions, Transaction)
+	}
+	branch.ParentItems = ParentItems
+	branch.Transactions = Transactions
+	c.JSON(http.StatusOK, branch)
 }

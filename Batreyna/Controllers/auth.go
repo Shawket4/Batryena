@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"Batreyna/Models"
-	"Batreyna/Token"
+	"BatrynaBackend/Models"
+	"BatrynaBackend/Token"
 
 	"github.com/gin-gonic/gin"
 	jwt "github.com/golang-jwt/jwt/v5"
@@ -69,7 +69,7 @@ func Login(c *gin.Context) {
 
 	user, _ = Models.GetUserByID(uid)
 
-	c.JSON(http.StatusOK, gin.H{"message": "Login Successful", "jwt": token})
+	c.JSON(http.StatusOK, gin.H{"message": "Login Successful", "jwt": token, "permission": user.Permission, "branch_id": user.BranchID})
 
 }
 

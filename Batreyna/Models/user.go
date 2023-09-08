@@ -6,7 +6,7 @@ import (
 	"html"
 	"strings"
 
-	"Batreyna/Token"
+	"BatrynaBackend/Token"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -17,6 +17,7 @@ type User struct {
 	Username   string `gorm:"size:255;not null;unique" json:"username"`
 	Password   string `gorm:"size:255;not null;" json:"password"`
 	Permission int    `json:"permission"`
+	BranchID   uint   `json:"branch_id"`
 }
 
 func GetUserByID(uid uint) (User, error) {

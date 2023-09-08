@@ -1,16 +1,16 @@
 package Routes
 
 import (
-	"Batreyna/Controllers"
-	"Batreyna/Middleware"
+	"BatrynaBackend/Controllers"
+	"BatrynaBackend/Middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Setup() {
+	const ServerPort string = "3006"
 	app := gin.Default()
-
-	// Public Registeration And Login
+	// Public Registration And Login
 	public := app.Group("/api")
 	public.POST("/login", Controllers.Login)
 	public.POST("/register", Controllers.Register)
@@ -23,10 +23,13 @@ func Setup() {
 	authorized.POST("/RegisterBranch", Controllers.RegisterBranch)
 	authorized.POST("/UpdateBranch", Controllers.UpdateBranch)
 	authorized.POST("/DeleteBranch", Controllers.DeleteBranch)
+	authorized.GET("/FetchBranchData", Controllers.FetchBranchData)
 	authorized.GET("/FetchTransactions", Controllers.FetchTransactions)
 	public.GET("/FetchBranchesHeatData", Controllers.FetchBranchesHeatData)
 	authorized.POST("/RegisterTransaction", Controllers.RegisterTransaction)
 	authorized.POST("/UpdateTransaction", Controllers.UpdateTransaction)
 	authorized.POST("/DeleteTransaction", Controllers.DeleteTransaction)
-	app.Run(":3006")
+	if err := app.Run(":" + ServerPort); err != nil {
+		panic("Couldn't Start Server On Port " + ServerPort)
+	}
 }

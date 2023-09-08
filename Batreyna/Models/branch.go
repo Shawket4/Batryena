@@ -4,9 +4,10 @@ import "gorm.io/gorm"
 
 type Branch struct {
 	gorm.Model
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	LatLng  LatLng `json:"lat_lng"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Address  string `json:"address"`
+	LatLng   LatLng `json:"lat_lng"`
 	// Inventory    Inventory     `json:"inventory"`
 	ParentItems  []ParentItem  `json:"parent_items"`
 	Transactions []Transaction `json:"transactions"`

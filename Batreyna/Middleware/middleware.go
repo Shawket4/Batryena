@@ -1,7 +1,7 @@
 package Middleware
 
 import (
-	"Batreyna/Token"
+	"BatrynaBackend/Token"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

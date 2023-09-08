@@ -1,7 +1,7 @@
 package Controllers
 
 import (
-	"Batreyna/Models"
+	"BatrynaBackend/Models"
 	"log"
 	"net/http"
 
@@ -22,6 +22,9 @@ func CalculateHeatMapValues(branches []Models.Branch) []Models.Branch {
 			highestSold = branch.HeatMap.TotalSold
 		}
 		totalSold += branch.HeatMap.TotalSold
+	}
+	if totalSold == 0 {
+		return branches
 	}
 	ratio = highestSold / totalSold
 	for index := range branches {

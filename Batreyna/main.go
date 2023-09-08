@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Batreyna/Models"
-	"Batreyna/Routes"
+	"BatrynaBackend/Models"
+	"BatrynaBackend/Routes"
 )
 
 func main() {

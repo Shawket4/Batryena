@@ -1,7 +1,7 @@
 package Controllers
 
 import (
-	"Batreyna/Models"
+	"BatrynaBackend/Models"
 	"fmt"
 	"net/http"
 
