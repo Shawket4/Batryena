@@ -14,6 +14,8 @@ type Branch struct {
 	HeatMap      HeatMap       `json:"heat_map"`
 	TotalSold    float64       `json:"total_sold" gorm:"-"`
 	SoldToday    float64       `json:"sold_today" gorm:"-"`
+	Shifts       []Shift       `json:"shifts"`
+	CurrentShift Shift         `json:"current_shift" gorm:"-"`
 }
 
 type HeatMap struct {

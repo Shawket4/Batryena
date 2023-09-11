@@ -24,14 +24,9 @@ func Setup() {
 		fmt.Println("We are connected to the database ")
 	}
 
-	DB.AutoMigrate(&User{}, &Item{}, &Branch{}, &LatLng{}, &Transaction{}, &HeatMap{}, &ItemID{}, &ParentItem{})
-	// DB.AutoMigrate(&DoctorWorkingHour{})
+	err = DB.AutoMigrate(&User{}, &Item{}, &Branch{}, &LatLng{}, &Transaction{}, &HeatMap{}, &ItemID{}, &ParentItem{}, &Employee{}, &Shift{}, &OTP{})
+	if err != nil {
+		panic(err)
+	}
 	DB.Session(&gorm.Session{FullSaveAssociations: true})
-	// password, _ := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
-	// var user User = User{
-	// 	Username:   "shawket",
-	// 	Password:   string(password),
-	// 	Permission: 2,
-	// }
-	// DB.Create(&user)
 }

@@ -2,7 +2,6 @@ package Controllers
 
 import (
 	"BatrynaBackend/Models"
-	"BatrynaBackend/Token"
 	"fmt"
 	"net/http"
 
@@ -18,14 +17,10 @@ func FetchTransactions(c *gin.Context) {
 }
 
 func RegisterTransaction(c *gin.Context) {
-	user_id, err := Token.ExtractTokenID(c)
-
+	user, err := getUserByContext(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		ReturnErr(c, err)
 	}
-
-	user, err := Models.GetUserByID(user_id)
 	var input Models.Transaction
 	if err := c.ShouldBindJSON(&input); err != nil {
 		ReturnErr(c, err)

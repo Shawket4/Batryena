@@ -14,6 +14,7 @@ func Setup() {
 	public := app.Group("/api")
 	public.POST("/login", Controllers.Login)
 	public.POST("/register", Controllers.Register)
+	public.GET("/FetchBranchList", Controllers.FetchBranchList)
 	// Protected
 	authorized := app.Group("/api/protected")
 	authorized.Use(Middleware.JwtAuthMiddleware())
@@ -29,6 +30,9 @@ func Setup() {
 	authorized.POST("/RegisterTransaction", Controllers.RegisterTransaction)
 	authorized.POST("/UpdateTransaction", Controllers.UpdateTransaction)
 	authorized.POST("/DeleteTransaction", Controllers.DeleteTransaction)
+	authorized.POST("/RegisterEmployee", Controllers.RegisterEmployee)
+	public.POST("/GenerateShiftOTP", Controllers.GenerateShiftOTP)
+	authorized.POST("/SwitchShift", Controllers.SwitchShift)
 	if err := app.Run(":" + ServerPort); err != nil {
 		panic("Couldn't Start Server On Port " + ServerPort)
 	}

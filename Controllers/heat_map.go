@@ -2,17 +2,9 @@ package Controllers
 
 import (
 	"BatrynaBackend/Models"
-	"net/http"
-	"time"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
-
-func getCurrentFormattedDate() string {
-	currentTime := time.Now()
-	formattedDate := currentTime.Format("2006-01-02")
-	return formattedDate
-}
 
 func FetchBranchesHeatData(c *gin.Context) {
 	// var input struct {
