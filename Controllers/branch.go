@@ -70,6 +70,17 @@ func FetchBranches(c *gin.Context) {
 		if err := Models.DB.Model(&Models.Transaction{}).Preload("Items").Where("branch_id = ?", branches[branchIndex].ID).Find(&transactions).Error; err != nil {
 			ReturnErr(c, err)
 		}
+		for transactionIndex, transaction := range transactions {
+			var ItemStructs []Models.Item
+			for _, itemID := range transaction.Items {
+				var Item Models.Item
+				if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID).Find(&Item).Error; err != nil {
+					ReturnErr(c, err)
+				}
+				ItemStructs = append(ItemStructs, Item)
+			}
+			transactions[transactionIndex].ItemsStruct = ItemStructs
+		}
 		branches[branchIndex].Transactions = transactions
 		var transactionsToday []Models.Transaction
 		today := getCurrentFormattedDate()
@@ -350,6 +361,15 @@ func FetchBranchData(c *gin.Context) {
 		if err := Models.DB.Model(&Models.Transaction{}).Where("id = ?", transaction.ID).Preload("Items").Find(&Transaction).Error; err != nil {
 			ReturnErr(c, err)
 		}
+		var ItemStructs []Models.Item
+		for _, itemID := range transaction.Items {
+			var Item Models.Item
+			if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID).Find(&Item).Error; err != nil {
+				ReturnErr(c, err)
+			}
+			ItemStructs = append(ItemStructs, Item)
+		}
+		Transaction.ItemsStruct = ItemStructs
 		Transactions = append(Transactions, Transaction)
 	}
 	branch.ParentItems = ParentItems

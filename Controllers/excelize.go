@@ -35,11 +35,6 @@ func GetBranchTransactionsExcel(c *gin.Context) {
 			if err := Models.DB.Model(&Models.Item{}).Where("id = ?", item.ID).Find(&Item).Error; err != nil {
 				ReturnErr(c, err)
 			}
-			var ItemName string
-			if err := Models.DB.Model(&Models.ParentItem{}).Where("id = ?", Item.ParentItemID).Select("name").Find(&ItemName).Error; err != nil {
-				ReturnErr(c, err)
-			}
-			Item.Name = ItemName
 			Transaction.ItemsStruct = append(Transaction.ItemsStruct, Item)
 		}
 		branch.Transactions[transactionIndex] = Transaction

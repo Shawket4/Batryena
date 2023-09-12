@@ -30,9 +30,14 @@ func RegisterTransaction(c *gin.Context) {
 	var items []Models.Item
 	for _, itemID := range input.Items {
 		var item Models.Item
+		var parentItem Models.ParentItem
 		if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID.ID).Find(&item).Error; err != nil {
 			ReturnErr(c, err)
 		}
+		if err := Models.DB.Model(&Models.ParentItem{}).Where("id = ?", item.ParentItemID).Find(&parentItem).Error; err != nil {
+			ReturnErr(c, err)
+		}
+		item.Name = parentItem.Name
 		items = append(items, item)
 	}
 	for index := range items {
