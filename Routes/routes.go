@@ -31,6 +31,7 @@ func Setup() {
 	authorized.POST("/UpdateTransaction", Controllers.UpdateTransaction)
 	authorized.POST("/DeleteTransaction", Controllers.DeleteTransaction)
 	authorized.POST("/RegisterEmployee", Controllers.RegisterEmployee)
+	authorized.POST("/GetBranchTransactionsExcel", Controllers.GetBranchTransactionsExcel)
 	public.POST("/GenerateShiftOTP", Controllers.GenerateShiftOTP)
 	authorized.POST("/SwitchShift", Controllers.SwitchShift)
 	if err := app.Run(":" + ServerPort); err != nil {

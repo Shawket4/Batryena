@@ -37,6 +37,7 @@ func RegisterTransaction(c *gin.Context) {
 	}
 	for index := range items {
 		items[index].IsSold = true
+		items[index].ParentItemID = 0
 		input.TotalCost += items[index].Price
 	}
 	if err := Models.DB.Save(&items).Error; err != nil {

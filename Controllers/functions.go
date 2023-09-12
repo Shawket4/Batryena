@@ -45,6 +45,11 @@ func getCurrentFormattedDate() string {
 	return formattedDate
 }
 
+func getFormattedDateTime(time time.Time) string {
+	formattedDate := time.Format("2006-01-02 15:04:05")
+	return formattedDate
+}
+
 func getBranchByContext(c *gin.Context) (Models.Branch, error) {
 	userId, err := Token.ExtractTokenID(c)
 
