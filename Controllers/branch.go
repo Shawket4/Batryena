@@ -74,7 +74,7 @@ func FetchBranches(c *gin.Context) {
 			var ItemStructs []Models.Item
 			for _, itemID := range transaction.Items {
 				var Item Models.Item
-				if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID).Find(&Item).Error; err != nil {
+				if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID.ID).Find(&Item).Error; err != nil {
 					ReturnErr(c, err)
 				}
 				ItemStructs = append(ItemStructs, Item)
@@ -364,7 +364,7 @@ func FetchBranchData(c *gin.Context) {
 		var ItemStructs []Models.Item
 		for _, itemID := range transaction.Items {
 			var Item Models.Item
-			if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID).Find(&Item).Error; err != nil {
+			if err := Models.DB.Model(&Models.Item{}).Where("id = ?", itemID.ID).Find(&Item).Error; err != nil {
 				ReturnErr(c, err)
 			}
 			ItemStructs = append(ItemStructs, Item)

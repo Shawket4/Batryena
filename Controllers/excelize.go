@@ -48,6 +48,8 @@ func GetBranchTransactionsExcel(c *gin.Context) {
 		"A": "Date",
 		"B": "Name",
 		"C": "Price",
+		"D": "Cost",
+		"E": "Profit",
 	}
 	for cell, value := range headers {
 		err := f.SetCellValue("Sheet1", cell+"1", value)
@@ -57,14 +59,22 @@ func GetBranchTransactionsExcel(c *gin.Context) {
 	}
 	index := 2
 	for transactionIndex, transaction := range branch.Transactions {
+		var netProfit float64
 		for _, item := range transaction.ItemsStruct {
 			f.SetCellValue("Sheet1", fmt.Sprintf("A%v", index), getFormattedDateTime(transaction.CreatedAt))
 			f.SetCellValue("Sheet1", fmt.Sprintf("B%v", index), item.Name)
 			f.SetCellValue("Sheet1", fmt.Sprintf("C%v", index), item.Price)
+			f.SetCellValue("Sheet1", fmt.Sprintf("D%v", index), item.Cost)
+			var profit float64 = item.Price - item.Cost
+			f.SetCellValue("Sheet1", fmt.Sprintf("E%v", index), profit)
+			netProfit += profit
 			index++
 		}
 		f.SetCellValue("Sheet1", fmt.Sprintf("B%v", index), "Total Cost")
 		f.SetCellValue("Sheet1", fmt.Sprintf("C%v", index), transaction.TotalCost)
+		index++
+		f.SetCellValue("Sheet1", fmt.Sprintf("B%v", index), "Net Profit")
+		f.SetCellValue("Sheet1", fmt.Sprintf("C%v", index), netProfit)
 		index += 3
 		if transactionIndex != len(branch.Transactions)-1 {
 			for cell, value := range headers {
@@ -85,4 +95,5 @@ func GetBranchTransactionsExcel(c *gin.Context) {
 	}
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
 	c.Data(http.StatusOK, "application/octet-stream", byteFile)
+	os.Remove(filePath)
 }
