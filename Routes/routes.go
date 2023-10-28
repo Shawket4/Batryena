@@ -11,6 +11,7 @@ func Setup() {
 	const ServerPort string = "3006"
 	app := gin.Default()
 	// Public Registration And Login
+	app.GET("/HelloMessage", Controllers.HelloMessage)
 	public := app.Group("/api")
 	public.POST("/login", Controllers.Login)
 	public.POST("/register", Controllers.Register)

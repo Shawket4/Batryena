@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+func HelloMessage(c *gin.Context) {
+	time.Sleep(time.Second * 2)
+	c.JSON(http.StatusOK, gin.H{"message": "Shawket2"})
+}
+
 func GetBranchTransactionsExcel(c *gin.Context) {
 	var input struct {
 		BranchID uint `json:"branch_id"`
